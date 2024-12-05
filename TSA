@@ -31,3 +31,8 @@ tsa_data <- purrr::map_df(.x = tsa_travel_urls, .f = scrape_tsa)
 
 # View the combined data
 print(tsa_data)
+
+https://www.nasdaq.com/market-activity/stocks/dal/historical?page=1&rows_per_page=10&timeline=y5
+
+write.csv(traffic_data, "M:\\ISA401\\data\\traffic_data.csv", row.names = F)
+
