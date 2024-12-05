@@ -1,0 +1,33 @@
+ Coding: scrape_tsa <- function(tsa_url) {
+  
+  # Scrape 1 webpage first
+  tsa_webpage <- rvest::read_html(tsa_url)
+  
+  # Try to extract the first table on the page
+  table <- tsa_webpage |>
+    rvest::html_element("table") |>
+    rvest::html_table(header = TRUE)
+  
+  # Check if the table is not NULL and has the expected columns
+  if (!is.null(table) && all(c("Date", "Numbers") %in% names(table))) {
+    # Combine into a data frame
+    tsa_travel <- data.frame(
+      Date = table$Date,
+      Numbers = table$Numbers
+    )
+  } else {
+    tsa_travel <- data.frame(Date = character(), Numbers = numeric())
+  }
+  
+  return(tsa_travel)
+}
+
+tsa_travel_urls <- c("https://www.tsa.gov/travel/passenger-volumes/2019",
+                     "https://www.tsa.gov/travel/passenger-volumes/2020",
+                     "https://www.tsa.gov/travel/passenger-volumes/2021",
+                     "https://www.tsa.gov/travel/passenger-volumes/2022")
+
+tsa_data <- purrr::map_df(.x = tsa_travel_urls, .f = scrape_tsa)
+
+# View the combined data
+print(tsa_data)
