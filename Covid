@@ -1,0 +1,28 @@
+# Load necessary library
+library(dplyr)
+
+# Read the CSV file
+data <- read.csv('C:/Users/cultonar/Downloads/covid casses.csv')
+
+# Rename columns for easier handling
+colnames(data) <- c("Entity", "Date", "Daily_Cases")
+
+# Convert the 'Date' column to Date format
+data$Date <- as.Date(data$Date)
+print(data$Date)
+
+# Create a Year-Month column for grouping
+data$YearMonth <- format(data$Date, "%Y-%m")
+
+# Group by YearMonth and calculate the mean of Daily_Cases
+grouped_data <- data %>%
+  group_by(YearMonth) %>%
+  summarise(Monthly_Cases = mean(Daily_Cases, na.rm = TRUE)) |> 
+  dplyr::mutate(
+    date = paste0(YearMonth, "-01")
+  )
+
+# View the grouped data
+print(grouped_data)
+install.packages("openxlsx")
+write.csv(grouped_data, "C:/Users/cultonar/Downloads/our_data.csv", row.names = F)
